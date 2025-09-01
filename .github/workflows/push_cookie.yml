@@ -1,0 +1,29 @@
+name: 推送 XHS Cookie 到 Coze via Token
+
+on:
+  workflow_dispatch:       # 手动触发
+  schedule:
+    - cron: '0 * * * *'    # 每小时自动执行
+
+jobs:
+  push-cookie:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Execute push script
+      env:
+        XHS_COOKIE: ${{ secrets.XHS_COOKIE }}
+        COZE_TOKEN: ${{ secrets.COZE_TOKEN }}
+        COZE_BOT_ID: ${{ secrets.COZE_BOT_ID }}
+      run: python push_to_coze.py
